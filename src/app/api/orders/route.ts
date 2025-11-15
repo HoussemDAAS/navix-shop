@@ -9,8 +9,6 @@ async function appendToSheet(orderData: any) {
     // Read credentials from JSON file
     const credentialsPath = join(process.cwd(), 'google-credentials.json');
     const credentials = JSON.parse(readFileSync(credentialsPath, 'utf8'));
-    
-    console.log('Using Google Sheets with client email:', credentials.client_email);
 
     // Create auth client
     const auth = new google.auth.GoogleAuth({
@@ -33,8 +31,6 @@ async function appendToSheet(orderData: any) {
       orderData.status
     ];
 
-    console.log('Appending to sheet:', process.env.GOOGLE_SHEET_ID);
-
     // Append to the sheet
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
@@ -45,10 +41,8 @@ async function appendToSheet(orderData: any) {
       },
     });
 
-    console.log('Successfully appended to Google Sheets');
     return true;
   } catch (error) {
-    console.error('Google Sheets API error:', error);
     throw error;
   }
 }
@@ -88,25 +82,17 @@ export async function POST(request: NextRequest) {
     const fs = require('fs');
     const path = require('path');
     const credentialsPath = path.join(process.cwd(), 'google-credentials.json');
-    
-    console.log('Checking for Google Sheets configuration...');
-    console.log('Credentials file exists:', fs.existsSync(credentialsPath));
-    console.log('Sheet ID:', process.env.GOOGLE_SHEET_ID);
 
-    if (fs.existsSync(credentialsPath) && process.env.GOOGLE_SHEET_ID) {
+    if (fs.existsSync(credentialsPath) && process.env.GOOGLE_SHEET_ID && 
+        process.env.GOOGLE_SHEET_ID !== 'your-google-sheet-id-here') {
       
       try {
         // Append to Google Sheet
         await appendToSheet(orderData);
-        console.log('Order successfully saved to Google Sheets:', orderData.orderId);
       } catch (sheetError) {
-        console.error('Failed to save to Google Sheets:', sheetError);
         // Continue with success response even if sheet fails
         // You might want to implement a fallback storage mechanism
       }
-    } else {
-      console.log('Google Sheets not configured. Order data:', orderData);
-      console.log('To enable Google Sheets integration, follow the setup guide in GOOGLE_SHEETS_SETUP.md');
     }
     
     return NextResponse.json(
@@ -120,7 +106,6 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    console.error('Order processing error:', error);
     return NextResponse.json(
       { error: 'Erreur lors du traitement de la commande' },
       { status: 500 }

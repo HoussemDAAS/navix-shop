@@ -24,7 +24,7 @@ async function appendToGoogleSheet(orderData: OrderData) {
     const sheetId = process.env.GOOGLE_SHEET_ID;
 
     if (!serviceAccountEmail || !privateKey || !sheetId) {
-      console.warn('Google Sheets credentials not configured');
+
       return false;
     }
 
@@ -63,7 +63,7 @@ async function appendToGoogleSheet(orderData: OrderData) {
 
     return true;
   } catch (error) {
-    console.error('Google Sheets error:', error);
+
     return false;
   }
 }
@@ -97,9 +97,9 @@ export async function POST(request: NextRequest) {
     const sheetsSuccess = await appendToGoogleSheet(orderData);
     
     if (sheetsSuccess) {
-      console.log('Order successfully saved to Google Sheets:', orderData.orderId);
+
     } else {
-      console.log('Order saved locally (Google Sheets not configured):', orderData.orderId);
+
     }
 
     // Simulate processing delay
@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    console.error('Order processing error:', error);
+
     return NextResponse.json(
       { error: 'Erreur lors du traitement de la commande' },
       { status: 500 }
