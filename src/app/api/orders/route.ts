@@ -7,8 +7,8 @@ import { join } from 'path';
 async function appendToSheet(orderData: any) {
   try {
     // Read credentials from JSON file
-    const credentialsPath = join(process.cwd(), 'google-credentials.json');
-    const credentials = JSON.parse(readFileSync(credentialsPath, 'utf8'));
+    const credentialsFilePath = join(process.cwd(), 'google-credentials.json');
+    const credentials = JSON.parse(readFileSync(credentialsFilePath, 'utf8'));
 
     // Create auth client
     const auth = new google.auth.GoogleAuth({
@@ -81,9 +81,9 @@ export async function POST(request: NextRequest) {
     // Check if Google Sheets integration is configured
     const fs = require('fs');
     const path = require('path');
-    const credentialsPath = path.join(process.cwd(), 'google-credentials.json');
+    const googleCredentialsPath = path.join(process.cwd(), 'google-credentials.json');
 
-    if (fs.existsSync(credentialsPath) && process.env.GOOGLE_SHEET_ID && 
+    if (fs.existsSync(googleCredentialsPath) && process.env.GOOGLE_SHEET_ID && 
         process.env.GOOGLE_SHEET_ID !== 'your-google-sheet-id-here') {
       
       try {
